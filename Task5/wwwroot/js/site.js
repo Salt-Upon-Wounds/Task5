@@ -34,6 +34,9 @@ const getData = () => {
         let fullname = faker.person.fullName();
         let streetAddress = faker.location.streetAddress();
         let number = faker.phone.number();
+
+        [fullname, streetAddress] = addTypos([fullname, streetAddress], mistakes);
+
         data.push([uuid, fullname, streetAddress, number]);
 
         let row = table.insertRow(table.rows.length - 1);
@@ -44,6 +47,61 @@ const getData = () => {
         row.insertCell().appendChild(document.createTextNode(number));
     }
     page++;
+}
+
+const addTypos = (fields, amount) => {
+    let typo = 0;
+    let field = 0;
+    for (; amount >= 1; amount--) {
+        typo = faker.number.int({ min: 0, max: 2 });
+        field = faker.number.int({ min: 0, max: fields.length - 1 });
+        console.log("IN " + fields[field] + " | " + typo);
+        switch (typo) {
+            case 0: fields[field] = addChar(fields[field]); break;
+            case 1: fields[field] = removeChar(fields[field]); break;
+            case 2: fields[field] = shuffleChars(fields[field]); break;
+        }
+        console.log("OUT" + fields[field]);
+    }
+    if (amount > 0 && faker.number.float({ min: 0, max: 1 }) > amount) {
+        typo = faker.number.int({ min: 0, max: 2 });
+        field = faker.number.int({ min: 0, max: fields.length - 1 });
+        switch (typo) {
+            case 0: fields[field] = addChar(fields[field]); break;
+            case 1: fields[field] = removeChar(fields[field]); break;
+            case 2: fields[field] = shuffleChars(fields[field]); break;
+        }
+    }
+    return fields;
+} 
+
+const addChar = (field) => {
+    if (field.length > 20) return field;
+    let index = faker.number.int({ min: 0, max: field.length - 1 });
+    let ch = faker.string.alpha();
+    //console.log(ch + " ADDED TO " + field + " ON " + index);
+    let res = field.split('');
+    res.splice(index, 0, ch);
+    return res.join('');
+} 
+
+const removeChar = (field) => {
+    if (field.length < 2) return field;
+    let index = faker.number.int({ min: 0, max: field.length - 1 });
+    //console.log(" REMOVED AT " + index + " IN " + field);
+    return field.substring(0, index) + field.substring(index + 1, field.length);
+} 
+
+const shuffleChars = (field) => {
+    let index = faker.number.int({ min: 0, max: field.length - 1 });
+    let index2 = faker.number.int({ min: 0, max: field.length - 1 });
+    while (index2 == index) index2 = faker.number.int({ min: 0, max: field.length - 1 });
+    //console.log(index + " AND " + index2 + " SHUFFLED IN " + field);
+    field = field.split('');
+    let tmp = field[index];
+    field[index] = field[index2];
+    field[index2] = tmp;
+    return field.join('');
 }
 
 window.addEventListener('load', () => {
@@ -59,15 +117,11 @@ window.addEventListener('scroll', () => {
 });
 
 errorsInput.oninput = (event) => {
-    if (Number.isInteger(Number(event.target.value))) {
-        if (event.target.value === '') {
-            mistakes = 0;
-            restart();
-        } else if (event.target.value >= 0) {
-            mistakes = Number(event.target.value);
-            restart();
-        }
-    } 
+    if (event.target.value === '') {
+        mistakes = 0;
+    } else if (event.target.value >= 0) {
+        mistakes = event.target.value;
+    }
 }
 
 seedInput.oninput = (event) => {
