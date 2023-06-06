@@ -40,7 +40,7 @@ const getData = () => {
 
         data.push([uuid, fullname, streetAddress, number]);
 
-        let row = table.insertRow(table.rows.length - 1);
+        let row = table.insertRow(table.rows.length);
         row.insertCell().append(document.createTextNode(data.length))
         row.insertCell().appendChild(document.createTextNode(uuid));
         row.insertCell().appendChild(document.createTextNode(fullname));
@@ -77,7 +77,7 @@ const addTypos = (fields, amount) => {
 } 
 
 const addChar = (field) => {
-    if (field.length > 20) return field;
+    if (field.length > 30) return field;
     let index = faker.number.int({ min: 0, max: field.length - 1 });
     let ch = faker.string.alpha();
     //console.log(ch + " ADDED TO " + field + " ON " + index);
@@ -87,10 +87,12 @@ const addChar = (field) => {
 } 
 
 const removeChar = (field) => {
-    if (field.length < 2) return field;
-    let index = faker.number.int({ min: 0, max: field.length - 1 });
+    if (field.length < 5) return field;
+    let index = faker.number.int({ min: 0, max: field.length - 2 });
     //console.log(" REMOVED AT " + index + " IN " + field);
-    return field.substring(0, index) + field.substring(index + 1, field.length);
+    let res = field.split('');
+    res.splice(index, 1);
+    return res.join('');
 } 
 
 const shuffleChars = (field) => {
