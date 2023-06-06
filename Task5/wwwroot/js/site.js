@@ -2,7 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-import { fakerDE, fakerRU, fakerPL } from '../lib/faker-js/faker/dist/esm/index.mjs';
+import { fakerDE, fakerPL, fakerEN_GB } from '../lib/faker-js/faker/dist/esm/index.mjs';
 //import '../lib/PapaParse/papaparse.js'
 
 const regionSelect = document.getElementById('select');
@@ -14,7 +14,7 @@ const csvButton = document.getElementById('csv');
 const table = document.getElementById('table').getElementsByTagName('tbody')[0];
 
 let mistakes = 0;
-let faker = fakerRU;
+let faker = fakerEN_GB;
 
 let data = [];
 let page = 0;
@@ -170,10 +170,10 @@ csvButton.onclick = () => {
 
 regionSelect.onchange = (event) => {
     switch (event.target.value) {
-        case '0': faker = fakerRU; break;
+        case '0': faker = fakerEN_GB; break;
         case '1': faker = fakerDE; break;
         case '2': faker = fakerPL; break;
-        default: faker = fakerRU; break;
+        default: faker = fakerEN_GB; break;
     }
     restart();
 }
