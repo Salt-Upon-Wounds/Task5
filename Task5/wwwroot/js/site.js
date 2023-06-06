@@ -7,6 +7,7 @@ import { fakerDE, fakerRU, fakerPL } from '../lib/faker-js/faker/dist/esm/index.
 
 const regionSelect = document.getElementById('select');
 const errorsInput = document.getElementById('errorsAmount');
+const errorsSlider = document.getElementById('errorsSlider');
 const seedInput = document.getElementById('seed');
 const seedButton = document.getElementById('seedRand');
 const csvButton = document.getElementById('csv');
@@ -55,13 +56,13 @@ const addTypos = (fields, amount) => {
     for (; amount >= 1; amount--) {
         typo = faker.number.int({ min: 0, max: 2 });
         field = faker.number.int({ min: 0, max: fields.length - 1 });
-        console.log("IN " + fields[field] + " | " + typo);
+        //console.log("IN " + fields[field] + " | " + typo);
         switch (typo) {
             case 0: fields[field] = addChar(fields[field]); break;
             case 1: fields[field] = removeChar(fields[field]); break;
             case 2: fields[field] = shuffleChars(fields[field]); break;
         }
-        console.log("OUT" + fields[field]);
+        //console.log("OUT" + fields[field]);
     }
     if (amount > 0 && faker.number.float({ min: 0, max: 1 }) > amount) {
         typo = faker.number.int({ min: 0, max: 2 });
@@ -119,9 +120,20 @@ window.addEventListener('scroll', () => {
 errorsInput.oninput = (event) => {
     if (event.target.value === '') {
         mistakes = 0;
+        errorsSlider.value = 0;
     } else if (event.target.value >= 0) {
         mistakes = event.target.value;
+        if (event.target.value > 10) {
+            errorsSlider.value = 10;
+        } else {
+            errorsSlider.value = event.target.value;
+        }
     }
+}
+
+errorsSlider.onchange = (event) => {
+    errorsInput.value = event.target.value;
+    mistakes = event.target.value;
 }
 
 seedInput.oninput = (event) => {
