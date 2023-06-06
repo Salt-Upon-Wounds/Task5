@@ -3,6 +3,7 @@
 
 // Write your JavaScript code.
 import { fakerDE, fakerRU, fakerPL } from '../lib/faker-js/faker/dist/esm/index.mjs';
+//import '../lib/PapaParse/papaparse.js'
 
 const regionSelect = document.getElementById('select');
 const errorsInput = document.getElementById('errorsAmount');
@@ -29,12 +30,18 @@ const getData = () => {
     //добавить ошибки и сохранение данных в массив для формирования csv
     faker.seed(seed + page);
     for (let i = 0; i < 20; i++) {
+        let uuid = faker.string.uuid();
+        let fullname = faker.person.fullName();
+        let streetAddress = faker.location.streetAddress();
+        let number = faker.phone.number();
+        data.push([uuid, fullname, streetAddress, number]);
+
         let row = table.insertRow(table.rows.length - 1);
         row.insertCell().append(document.createTextNode(data.length))
-        row.insertCell().appendChild(document.createTextNode(faker.string.uuid()));
-        row.insertCell().appendChild(document.createTextNode(faker.person.fullName()));
-        row.insertCell().appendChild(document.createTextNode(faker.location.streetAddress()));
-        row.insertCell().appendChild(document.createTextNode(faker.phone.number()));
+        row.insertCell().appendChild(document.createTextNode(uuid));
+        row.insertCell().appendChild(document.createTextNode(fullname));
+        row.insertCell().appendChild(document.createTextNode(streetAddress));
+        row.insertCell().appendChild(document.createTextNode(number));
     }
     page++;
 }
@@ -83,7 +90,16 @@ seedButton.onclick = () => {
 }
 
 csvButton.onclick = () => {
-    //допиши
+    let csv = Papa.unparse(data);
+    
+    let csvData = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    let csvURL = window.URL.createObjectURL(csvData);
+
+    let testLink = document.createElement('a');
+    testLink.href = csvURL;
+    testLink.setAttribute('test', 'test.csv');
+    testLink.click();
 }
 
 regionSelect.onchange = (event) => {
