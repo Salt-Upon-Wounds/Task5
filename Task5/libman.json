@@ -5,6 +5,11 @@
     {
       "library": "Faker@3.1.0",
       "destination": "wwwroot/lib/Faker/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "@faker-js/faker@8.0.2",
+      "destination": "wwwroot/lib/faker-js/faker/"
     }
   ]
 }
